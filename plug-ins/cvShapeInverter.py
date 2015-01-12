@@ -63,8 +63,6 @@ class cvShapeInverter(OpenMayaMPx.MPxDeformerNode):
             itGeo.setPosition(pt)
             itGeo.next()
 
-        return OpenMaya.MStatus.kSuccess
-
 
     def jumpToElement(self, hArray, index):
         """@brief Jumps an array handle to a logical index and uses the builder if necessary.
