@@ -2,6 +2,8 @@ import maya.OpenMayaMPx as OpenMayaMPx
 import maya.OpenMaya as OpenMaya
 import math
 
+API_VERSION = OpenMaya.MGlobal.apiVersion()
+
 class cvShapeInverter(OpenMayaMPx.MPxDeformerNode):
     kPluginNodeName = "cvShapeInverter"
     kPluginNodeId = OpenMaya.MTypeId(0x00115805)
@@ -16,15 +18,19 @@ class cvShapeInverter(OpenMayaMPx.MPxDeformerNode):
         self.__matrices = []
         self.__deformedPoints = OpenMaya.MPointArray()
 
-    def deform( self, data, itGeo, localToWorldMatrix, geomIndex):
+    def deform(self, data, itGeo, localToWorldMatrix, geomIndex):
         run = data.inputValue(cvShapeInverter.aActivate).asBool()
         if not run:
             return OpenMaya.MStatus.kSuccess
 
         # Read the matrices
         if not self.__initialized:
-            inputAttribute = OpenMayaMPx.cvar.MPxDeformerNode_input
-            inputGeom = OpenMayaMPx.cvar.MPxDeformerNode_inputGeom
+            if API_VERSION < 201600:
+                inputAttribute = OpenMayaMPx.cvar.MPxDeformerNode_input
+                inputGeom = OpenMayaMPx.cvar.MPxDeformerNode_inputGeom
+            else:
+                inputAttribute = OpenMayaMPx.cvar.MPxGeometryFilter_input
+                inputGeom = OpenMayaMPx.cvar.MPxGeometryFilter_inputGeom
             hInput = data.outputArrayValue(inputAttribute)
             hInput.jumpToElement(geomIndex)
             oInputGeom = hInput.outputValue().child(inputGeom).asMesh()
@@ -88,7 +94,10 @@ def initialize():
     tAttr = OpenMaya.MFnTypedAttribute()
     nAttr = OpenMaya.MFnNumericAttribute()
 
-    outputGeom = OpenMayaMPx.cvar.MPxDeformerNode_outputGeom
+    if API_VERSION < 201600:
+        outputGeom = OpenMayaMPx.cvar.MPxDeformerNode_outputGeom
+    else:
+        outputGeom = OpenMayaMPx.cvar.MPxGeometryFilter_outputGeom
 
     cvShapeInverter.aActivate = nAttr.create('activate', 'activate',
             OpenMaya.MFnNumericData.kBoolean)
