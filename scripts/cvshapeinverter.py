@@ -66,7 +66,7 @@ def invert(base=None, corrective=None, name=None):
 
     invertedShape = cmds.duplicate(base, name=name)[0]
     # Delete the unnessary shapes
-    shapes = cmds.listRelatives(invertedShape, children=True, shapes=True)
+    shapes = cmds.listRelatives(invertedShape, children=True, shapes=True, path=True)
     for s in shapes:
         if cmds.getAttr('%s.intermediateObject' % s):
             cmds.delete(s)
@@ -114,7 +114,7 @@ def getShape(node):
     @return The associated shape node.
     """
     if cmds.nodeType(node) == 'transform':
-        shapes = cmds.listRelatives(node, shapes=True)
+        shapes = cmds.listRelatives(node, shapes=True, path=True)
         if not shapes:
             raise RuntimeError, '%s has no shape' % node
         return shapes[0]
