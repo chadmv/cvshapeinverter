@@ -17,7 +17,6 @@ def invert(base=None, corrective=None, name=None):
     """
     if not cmds.pluginInfo('cvShapeInverter.py', query=True, loaded=True):
         cmds.loadPlugin('cvShapeInverter.py')
-    cmds.undoInfo(openChunk=True)
     if not base or not corrective:
         sel = cmds.ls(sl=True)
         if not sel or len(sel) != 2:
@@ -40,7 +39,6 @@ def invert(base=None, corrective=None, name=None):
             origMesh = s
             break
     else:
-        cmds.undoInfo(closeChunk=True)
         raise RuntimeError('No intermediate shape found for %s.' % base)
 
     # Get the component offset axes
@@ -49,6 +47,7 @@ def invert(base=None, corrective=None, name=None):
     yPoints = OpenMaya.MPointArray(origPoints)
     zPoints = OpenMaya.MPointArray(origPoints)
 
+    cmds.undoInfo(openChunk=True)
     for i in range(numPoints):
         xPoints[i].x += 1.0
         yPoints[i].y += 1.0
