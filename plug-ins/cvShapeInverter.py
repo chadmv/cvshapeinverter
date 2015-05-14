@@ -21,7 +21,7 @@ class cvShapeInverter(OpenMayaMPx.MPxDeformerNode):
     def deform(self, data, itGeo, localToWorldMatrix, geomIndex):
         run = data.inputValue(cvShapeInverter.aActivate).asBool()
         if not run:
-            return OpenMaya.MStatus.kSuccess
+            return
 
         # Read the matrices
         if not self.__initialized:
