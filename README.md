@@ -5,8 +5,14 @@ A script and deformer that can invert a shape through a deformation chain so the
 
 Installation:
 -------------
-Copy cvshapeinverter.txt into your maya/modules folder.
+Copy cvshapeinverter.mod into your maya/modules folder or 
 Edit the copied cvshapeinverter.txt with the path to the cvshapeinverter folder.
+
+cvshapeinverter is Maya module that can be installed like all other Maya modules. You can do one of the following:
+
+* Add the cvshapeinverter root directory to the MAYA_MODULE_PATH environment variable.
+* Add the cvshapeinverter root directory to the MAYA_MODULE_PATH in your Maya.env. e.g. MAYA_MODULE_PATH += /path/to/cvshapeinverter
+* Edit the cvshapeinverter.mod file, and replace the ./ with the full path to the cmt root directory, then copy the cmt.mod file to where your modules are loaded from.
 
 Usage:
 ------
@@ -16,6 +22,9 @@ Pose your skinned model in the pose that you want to correct. Duplicate the mesh
 ```
 import cvshapeinverter
 cvshapeinverter.invert()
+
+# or without selection
+inverted_mesh = cvshapeinverter.invert(base_deformed_mesh, corrective_sculpt)
 ```
 
 An inverted shape will be generated which you can then apply as a front of chain blendShape target. The generated shape will have a live deformer affecting it so edits you make on your corrected mesh will be inverted through the deformer.

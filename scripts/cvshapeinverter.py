@@ -44,17 +44,10 @@ def invert(base=None, corrective=None, name=None):
     corrective_points = get_points(corrective)
 
     # Get the intermediate mesh
-    shapes = cmds.listRelatives(base, children=True, shapes=True)
-    for s in shapes:
-        if cmds.getAttr('%s.intermediateObject' % s) and cmds.listConnections('%s.worldMesh' % s,
-                source=False):
-            origMesh = s
-            break
-    else:
-        raise RuntimeError('No intermediate shape found for %s.' % base)
+    orig_mesh = get_shape(base, intermediate=True)
 
     # Get the component offset axes
-    orig_points = get_points(origMesh)
+    orig_points = get_points(orig_mesh)
     x_points = OpenMaya.MPointArray(orig_points)
     y_points = OpenMaya.MPointArray(orig_points)
     z_points = OpenMaya.MPointArray(orig_points)
@@ -64,13 +57,13 @@ def invert(base=None, corrective=None, name=None):
         x_points[i].x += 1.0
         y_points[i].y += 1.0
         z_points[i].z += 1.0
-    set_points(origMesh, x_points)
+    set_points(orig_mesh, x_points)
     x_points = get_points(base)
-    set_points(origMesh, y_points)
+    set_points(orig_mesh, y_points)
     y_points = get_points(base)
-    set_points(origMesh, z_points)
+    set_points(orig_mesh, z_points)
     z_points = get_points(base)
-    set_points(origMesh, orig_points)
+    set_points(orig_mesh, orig_points)
 
     # Create the mesh to get the inversion deformer
     if not name:
@@ -120,17 +113,25 @@ def invert(base=None, corrective=None, name=None):
     return inverted_shapes
 
 
-def get_shape(node):
+def get_shape(node, intermediate=False):
     """Returns a shape node from a given transform or shape.
 
     @param[in] node Name of the node.
+    @param[in] intermediate True to get the intermediate mesh
     @return The associated shape node.
     """
     if cmds.nodeType(node) == 'transform':
         shapes = cmds.listRelatives(node, shapes=True, path=True)
         if not shapes:
             raise RuntimeError, '%s has no shape' % node
-        return shapes[0]
+        for shape in shapes:
+            is_intermediate = cmds.getAttr('%s.intermediateObject' % shape)
+            if intermediate and is_intermediate and cmds.listConnections('%s.worldMesh' % shape,
+                                                                         source=False):
+                return shape
+            elif not intermediate and not is_intermediate:
+                return shape
+        raise RuntimeError('Could not find shape on node {0}'.format(node))
     elif cmds.nodeType(node) in ['mesh', 'nurbsCurve', 'nurbsSurface']:
         return node
 

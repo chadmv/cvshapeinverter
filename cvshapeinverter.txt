@@ -1,1 +1,0 @@
-+ cvshapeinverter 1.0 C:/My Documents/maya/modules/cvshapeinverter
