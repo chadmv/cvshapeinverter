@@ -5,10 +5,7 @@ A script and deformer that can invert a shape through a deformation chain so the
 
 Installation:
 -------------
-Copy cvshapeinverter.mod into your maya/modules folder or 
-Edit the copied cvshapeinverter.txt with the path to the cvshapeinverter folder.
-
-cvshapeinverter is Maya module that can be installed like all other Maya modules. You can do one of the following:
+cvshapeinverter is a Maya module that can be installed like all other Maya modules. You can do one of the following:
 
 * Add the cvshapeinverter root directory to the MAYA_MODULE_PATH environment variable.
 * Add the cvshapeinverter root directory to the MAYA_MODULE_PATH in your Maya.env. e.g. MAYA_MODULE_PATH += /path/to/cvshapeinverter
