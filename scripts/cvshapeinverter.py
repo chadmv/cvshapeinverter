@@ -107,7 +107,6 @@ def invert(base=None, corrective=None, name=None):
     plug_deformed_points.setMObject(point_data_mobj)
 
     cmds.connectAttr('%s.outMesh' % get_shape(corrective), '%s.correctiveMesh' % deformer)
-    cmds.setAttr('%s.activate' % deformer, True)
 
     cmds.undoInfo(closeChunk=True)
     return inverted_shapes
